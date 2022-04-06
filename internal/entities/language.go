@@ -10,7 +10,7 @@ type Language struct{
 	Name string
 }
 
-func newLanguage(code string,name string) Language{
+func NewLanguage(code string,name string) Language{
 	language:=Language{
 		Code:code,
 		Name:name,

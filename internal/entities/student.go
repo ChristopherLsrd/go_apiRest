@@ -12,9 +12,9 @@ type Student struct{
 	LanguageCode string
 }
 
-func newStudent(fname string,lname string,age int,languageCode string) Student{
+func NewStudent(id int,fname string,lname string,age int,languageCode string) Student{
 	student:=Student{
-		Id:1,
+		Id:id,
 		FirstName:fname,
 		LastName:lname,
 		Age:age,
@@ -25,5 +25,6 @@ func newStudent(fname string,lname string,age int,languageCode string) Student{
 
 
 func (s Student) String() string{
-	return fmt.Sprintf("%s %s",s.FirstName, s.LastName )
+	return fmt.Sprintf("%d %s %s %d %s",s.Id,s.FirstName, s.LastName,s.Age,s.LanguageCode )
 }
+
