@@ -6,21 +6,21 @@ import(
 	"github.com/gorilla/mux"
 	"fmt"
 	"internal/entities"
+	"internal/persistence"
 	"encoding/json"
 	"log"
 	"io/ioutil"
 )
 
-var languages []entities.Language = []entities.Language{
-    entities.NewLanguage("21", "Go"), entities.NewLanguage("12", "Python"),
-}
+ var languageDAOMem=persistence.NewLanguageDAOMem()
 
 func LanguageHandler(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	code := (vars["code"])
 
 
-	data := getLanguage(code)
+	//data := getLanguage(code)
+	data :=languageDAOMem.Find(code)
 
 	j, err := json.Marshal(data)
 	if err != nil {
@@ -32,8 +32,10 @@ func LanguageHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func LanguagesHandler(w http.ResponseWriter, r *http.Request){
-	languages=append(languages)
-	j, err := json.Marshal(languages)
+	//languages=append(languages)
+	
+	j, err := json.Marshal(languageDAOMem.FindAll())
+	//j, err := json.Marshal(languages)
 	if err!=nil{
 		log.Fatal(err)
 	}
@@ -44,7 +46,7 @@ func PostLanguageHandler(w http.ResponseWriter, r *http.Request) {
     reqBody, _ := ioutil.ReadAll(r.Body)
     var language entities.Language
     json.Unmarshal(reqBody, &language)
-    languages = append(languages, language)
+    languageDAOMem.Create(language)
  
     json.NewEncoder(w).Encode(language)
 }
@@ -53,12 +55,13 @@ func DeleteLanguageHandler(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     code:= vars["code"]
 
- 
-    for index, language := range languages {
+	languageDAOMem.Delete(code)
+    /*for index, language := range languages {
         if language.Code == code {
             languages = append(languages[:index], languages[index+1:]...)
+			
         }
-    }
+    }*/
  
 }
 
@@ -68,16 +71,18 @@ func PutLanguageHandler(w http.ResponseWriter, r *http.Request) {
     var language entities.Language
 	
     json.Unmarshal(reqBody, &language)
-	for i,languageFor:=range languages{
+	languageDAOMem.Update(language)
+	/*for i,languageFor:=range languages{
 		if language.Code==languageFor.Code{
 			languages[i]=language
 		}
-	}
+	}*/
 }
 
 
-
+/*
 func getLanguage(code string) entities.Language{
+	
 	for _,language:= range languages{
 		if language.Code == code{
 			return language
@@ -85,4 +90,4 @@ func getLanguage(code string) entities.Language{
 	}
 	
 	return entities.NewLanguage("","")
-}
+}*/

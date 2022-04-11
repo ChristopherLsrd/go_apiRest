@@ -5,15 +5,14 @@ import(
 	"github.com/gorilla/mux"
 	"fmt"
 	"internal/entities"
+	"internal/persistence"
 	"encoding/json"
 	"log"
 	"strconv"
 	"io/ioutil"
 )
 
-var students []entities.Student = []entities.Student{
-    entities.NewStudent(1, "Gaspar", "Missiaen", 21, "23"), entities.NewStudent(2, "Daurian", "Jsp", 20, "Go"), entities.NewStudent(3, "Daryl", "Jsp", 20, "-2"), entities.NewStudent(4, "Christopher", "Lessirard", 20, "26"),
-}
+var studentDAOMem=persistence.NewStudentDAOMem()
 
 //students/{id}
 func StudentHandler(w http.ResponseWriter, r *http.Request){
@@ -22,7 +21,7 @@ func StudentHandler(w http.ResponseWriter, r *http.Request){
 
 //	id, ok := []
 
-	data := getStudent(id)
+	data := studentDAOMem.Find(id)
 
 	j, err := json.Marshal(data)
 	if err != nil {
@@ -37,8 +36,7 @@ func StudentHandler(w http.ResponseWriter, r *http.Request){
 //students
 func StudentsHandler(w http.ResponseWriter, r *http.Request){
 		
-		students=append(students)
-		j, err := json.Marshal(students)
+		j, err := json.Marshal(studentDAOMem.FindAll())
 		if err!=nil{
 			log.Fatal(err)
 		}
@@ -51,7 +49,7 @@ func PostStudentHandler(w http.ResponseWriter, r *http.Request) {
     reqBody, _ := ioutil.ReadAll(r.Body)
     var student entities.Student
     json.Unmarshal(reqBody, &student)
-    students = append(students, student)
+	studentDAOMem.Create(student)
  
     json.NewEncoder(w).Encode(student)
 }
@@ -63,11 +61,7 @@ func DeleteStudentHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
  
-    for index, student := range students {
-        if student.Id == id {
-            students = append(students[:index], students[index+1:]...)
-        }
-    }
+   studentDAOMem.Delete(id)
  
 }
 
@@ -77,19 +71,5 @@ func PutStudentHandler(w http.ResponseWriter, r *http.Request) {
     var student entities.Student
 	
     json.Unmarshal(reqBody, &student)
-	for i,studentFor:=range students{
-		if student.Id==studentFor.Id{
-			students[i]=student
-		}
-	}
-}
-
-func getStudent(id int) entities.Student{
-	for _,student:= range students{
-		if student.Id == id{
-			return student
-		}
-	}
-	
-	return entities.NewStudent(0,"","",0,"")
+	studentDAOMem.Update(student)
 }

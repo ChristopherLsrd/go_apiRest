@@ -28,8 +28,8 @@ func main(){
 	r.HandleFunc("/rest/students",rest.PostStudentHandler).Methods("POST")
 	r.HandleFunc("/rest/students",rest.PutStudentHandler).Methods("PUT")
 
-	
 
+	
 	log.Fatal(http.ListenAndServe(":8080", r))
 	
 }
