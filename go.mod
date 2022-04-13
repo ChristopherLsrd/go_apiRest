@@ -12,6 +12,14 @@ require internal/persistence v1.0.0
 
 replace internal/persistence => ./internal/persistence
 
-require internal/web/rest v1.0.0
+require internal/persistence/bolt v1.0.0
+
+replace internal/persistence/bolt => ./internal/persistence/bolt
+
+require (
+	github.com/boltdb/bolt v1.3.1 // indirect
+	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
+	internal/web/rest v1.0.0
+)
 
 replace internal/web/rest => ./internal/web/rest
