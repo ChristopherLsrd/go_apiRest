@@ -1,24 +1,15 @@
 package main
 
 import (
-	/*"internal/entities"
-	"internal/persistence/bolt"*/
 	"internal/web/rest"
 	"log"
 	"net/http"
-
 	"github.com/gorilla/mux"
 )
 
 func main() {
 
-	/*	var languages []entities.Language = []entities.Language{
-			entities.NewLanguage("21", "Go"), entities.NewLanguage("12", "Python"),
-		}
-		var b = bolt.DBopen("base.db")
-		for _, l := range languages {
-			b.DBput("languages", l.Code, l.String())
-		}*/
+	
 
 	r := mux.NewRouter()
 

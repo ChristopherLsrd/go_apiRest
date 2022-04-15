@@ -18,7 +18,7 @@ var languageDAOBolt = persistence.NewLanguageDAOBolt()
 func LanguageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	code := (vars["code"])
-
+	log.Fatal("ccc")
 	//data := getLanguage(code)
 	//data := languageDAOMem.Find(code)
 	data := languageDAOBolt.Find(code)
@@ -45,22 +45,17 @@ func PostLanguageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var language entities.Language
 	json.Unmarshal(reqBody, &language)
-	languageDAOMem.Create(language)
-
+	//languageDAOMem.Create(language)
+	languageDAOBolt.Create(language)
 	json.NewEncoder(w).Encode(language)
 }
 
 func DeleteLanguageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	code := vars["code"]
-
-	languageDAOMem.Delete(code)
-	/*for index, language := range languages {
-	    if language.Code == code {
-	        languages = append(languages[:index], languages[index+1:]...)
-
-	    }
-	}*/
+	
+	//languageDAOMem.Delete(code)
+	languageDAOBolt.Delete(code)
 
 }
 
@@ -70,22 +65,8 @@ func PutLanguageHandler(w http.ResponseWriter, r *http.Request) {
 	var language entities.Language
 
 	json.Unmarshal(reqBody, &language)
-	languageDAOMem.Update(language)
-	/*for i,languageFor:=range languages{
-		if language.Code==languageFor.Code{
-			languages[i]=language
-		}
-	}*/
+	//languageDAOMem.Update(language)
+	languageDAOBolt.Update(language)
+
 }
 
-/*
-func getLanguage(code string) entities.Language{
-
-	for _,language:= range languages{
-		if language.Code == code{
-			return language
-		}
-	}
-
-	return entities.NewLanguage("","")
-}*/

@@ -5,6 +5,7 @@ import (
 	"internal/entities"
 	"internal/persistence/bolt"
 	"log"
+	
 )
 
 var b = bolt.DBopen("base.db")
@@ -15,11 +16,11 @@ func NewLanguageDAOBolt() LanguageDAOBolt {
 	return LanguageDAOBolt{}
 }
 
-func (LanguageDAOBolt) FindAll() []entities.Language {
-	res := b.DBgetAll("languages")
+func (l LanguageDAOBolt) FindAll() []entities.Language {
+	res := b.DBgetAll("Languages")
 	var languages []entities.Language
 	for _, l := range res {
-		log.Fatal(res)
+		
 		var language entities.Language
 		json.Unmarshal([]byte(l), &language)
 		languages = append(languages, language)
@@ -27,20 +28,53 @@ func (LanguageDAOBolt) FindAll() []entities.Language {
 	return languages
 }
 
-func (LanguageDAOBolt) Find(code string) string {
-	return b.DBget("languages", code)
+func (l LanguageDAOBolt) Find(code string) entities.Language {
+	var language entities.Language
+	res:=b.DBget("Languages", code)
+	json.Unmarshal([]byte(res), &language)
+	return language
 }
 
-func (LanguageDAOBolt) Delete(code string) bool {
-	res := b.DBget("languages", code)
-	if res != "" {
-		b.DBdelete("languages", code)
+func (l LanguageDAOBolt) Delete(code string) bool {
+	
+	err:=	b.DBdelete("Languages", code)
+		if err!=nil{
+			log.Fatal(err)
+			return false
+		}
+		return true
+}
+
+func (l LanguageDAOBolt) Create(language entities.Language) bool {
+	res, _ := json.Marshal(language)
+	if l.Exists(language.Code)==false{
+		b.DBput("Languages", language.Code, string(res))
 		return true
 	}
+	return  false
+	
+	
+}
 
+
+func(l LanguageDAOBolt) Exists(code string) bool{
+	language:=b.DBget("Languages",code)
+	if language !=""{
+		
+		return true
+	}
 	return false
 }
 
-func (LanguageDAOBolt) Create(language entities.Language) {
-	b.DBput("languages", language.Code, language.String())
+
+func (l LanguageDAOBolt) Update(language entities.Language) bool {
+	res, _ := json.Marshal(language)
+	if l.Exists(language.Code)==true{
+		b.DBdelete("Languages",language.Code)
+		b.DBput("Languages", language.Code, string(res))
+		return true
+	}
+	return  false
+	
+	
 }
