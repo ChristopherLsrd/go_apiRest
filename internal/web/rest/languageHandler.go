@@ -18,7 +18,7 @@ var languageDAOBolt = persistence.NewLanguageDAOBolt()
 func LanguageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	code := (vars["code"])
-	log.Fatal("ccc")
+
 	//data := getLanguage(code)
 	//data := languageDAOMem.Find(code)
 	data := languageDAOBolt.Find(code)
@@ -53,7 +53,7 @@ func PostLanguageHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteLanguageHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	code := vars["code"]
-	
+
 	//languageDAOMem.Delete(code)
 	languageDAOBolt.Delete(code)
 
@@ -69,4 +69,3 @@ func PutLanguageHandler(w http.ResponseWriter, r *http.Request) {
 	languageDAOBolt.Update(language)
 
 }
-

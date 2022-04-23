@@ -5,10 +5,9 @@ import (
 	"internal/entities"
 	"internal/persistence/bolt"
 	"log"
-	
 )
 
-var b = bolt.DBopen("base.db")
+var b = bolt.GetboltDB()
 
 type LanguageDAOBolt struct{}
 
@@ -20,7 +19,7 @@ func (l LanguageDAOBolt) FindAll() []entities.Language {
 	res := b.DBgetAll("Languages")
 	var languages []entities.Language
 	for _, l := range res {
-		
+
 		var language entities.Language
 		json.Unmarshal([]byte(l), &language)
 		languages = append(languages, language)
@@ -30,51 +29,47 @@ func (l LanguageDAOBolt) FindAll() []entities.Language {
 
 func (l LanguageDAOBolt) Find(code string) entities.Language {
 	var language entities.Language
-	res:=b.DBget("Languages", code)
+	res := b.DBget("Languages", code)
 	json.Unmarshal([]byte(res), &language)
 	return language
 }
 
 func (l LanguageDAOBolt) Delete(code string) bool {
-	
-	err:=	b.DBdelete("Languages", code)
-		if err!=nil{
-			log.Fatal(err)
-			return false
-		}
-		return true
+
+	err := b.DBdelete("Languages", code)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	return true
 }
 
 func (l LanguageDAOBolt) Create(language entities.Language) bool {
 	res, _ := json.Marshal(language)
-	if l.Exists(language.Code)==false{
+	if l.Exists(language.Code) == false {
 		b.DBput("Languages", language.Code, string(res))
 		return true
 	}
-	return  false
-	
-	
+	return false
+
 }
 
+func (l LanguageDAOBolt) Exists(code string) bool {
+	language := b.DBget("Languages", code)
+	if language != "" {
 
-func(l LanguageDAOBolt) Exists(code string) bool{
-	language:=b.DBget("Languages",code)
-	if language !=""{
-		
 		return true
 	}
 	return false
 }
 
-
 func (l LanguageDAOBolt) Update(language entities.Language) bool {
 	res, _ := json.Marshal(language)
-	if l.Exists(language.Code)==true{
-		b.DBdelete("Languages",language.Code)
+	if l.Exists(language.Code) == true {
+		b.DBdelete("Languages", language.Code)
 		b.DBput("Languages", language.Code, string(res))
 		return true
 	}
-	return  false
-	
-	
+	return false
+
 }

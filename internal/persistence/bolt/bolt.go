@@ -1,12 +1,15 @@
 package bolt
 
 import (
-	"fmt"
-	"log"
-	"internal/entities"
 	"encoding/json"
+	"fmt"
+	"internal/entities"
+	"log"
+
 	"github.com/boltdb/bolt"
 )
+
+var database *bolt.DB
 
 type boltDB struct {
 	db *bolt.DB
@@ -20,36 +23,48 @@ type boltDB struct {
 
 func DBopen(filename string) boltDB {
 	db, err := bolt.Open(filename, 0600, nil)
+	database = db
 	if err != nil {
 		log.Fatal(err)
 	}
-	createDatabase(boltDB{db :db})
+	DBCreate(boltDB{db: db})
 	return boltDB{db: db}
+}
+
+func GetboltDB() boltDB {
+
+	if database != nil {
+		return boltDB{db: database}
+	}
+
+	return DBopen("base.db")
+
 }
 
 func (b boltDB) DBclose(db *bolt.DB) {
 	db.Close()
 }
 
-func createDatabase(b boltDB) {
+func DBCreate(b boltDB) {
 
-	var bucketsName []string = []string{"Students", "Languages"}
+	var buckets []string = []string{"Students", "Languages"}
 
-	for _, name := range bucketsName {
+	for _, name := range buckets {
 		b.deleteBucket(name)
 		b.DBcreateBucket(name)
 	}
 
-	//b.insertFakeDataStudents()
-	b.insertFakeDataLanguages()
+	b.insertDefaultDataLanguages()
+	b.insertDefaultDataStudents()
+
 }
 
-func (b boltDB) insertFakeDataLanguages() {
+func (b boltDB) insertDefaultDataLanguages() {
 
 	var languages []entities.Language = []entities.Language{
-		entities.NewLanguage("FR", "France bolt"),
-		entities.NewLanguage("DE", "Allemagne bolt"),
-		entities.NewLanguage("CH", "Chine bolt"),
+		entities.NewLanguage("FR", "Français"),
+		entities.NewLanguage("EN", "Anglais"),
+		entities.NewLanguage("IT", "Italien"),
 	}
 
 	for _, language := range languages {
@@ -61,6 +76,23 @@ func (b boltDB) insertFakeDataLanguages() {
 
 }
 
+func (b boltDB) insertDefaultDataStudents() {
+	var students []entities.Student = []entities.Student{
+		entities.NewStudent(2, "Marin", "Marais", 18, "FR"),
+		entities.NewStudent(3, "Arthur", "Dubeau", 20, "FR"),
+		entities.NewStudent(4, "Sebastiano", "Sagese", 23, "IT"),
+		entities.NewStudent(1, "Matilda", "Barton", 19, "EN"),
+		entities.NewStudent(1, "Aaron", "Hardy", 20, "EN"),
+	}
+
+	for _, student := range students {
+
+		res, _ := json.Marshal(student)
+
+		b.DBput("Students", fmt.Sprintf("%d", student.Id), string(res))
+	}
+
+}
 
 func (b boltDB) DBpath() string {
 
@@ -87,8 +119,6 @@ func (b boltDB) DBput(bucketName string, key string, value string) {
 
 }
 
-
-
 func (b boltDB) DBget(bucketName string, key string) string {
 	var value string
 	err := b.db.View(func(tx *bolt.Tx) error {
@@ -97,7 +127,6 @@ func (b boltDB) DBget(bucketName string, key string) string {
 			log.Fatal()
 		}
 		value = string(bucket.Get([]byte(key)))
-
 		return nil
 	})
 	if err != nil {
@@ -118,7 +147,7 @@ func (b boltDB) DBgetAll(bucketName string) []string {
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			value := fmt.Sprintf("%s", v)
 			resultat = append(resultat, value)
-			
+
 		}
 
 		return nil
@@ -126,21 +155,19 @@ func (b boltDB) DBgetAll(bucketName string) []string {
 
 	if err != nil {
 		log.Fatal(err)
-		
+
 	}
 
 	return resultat
 }
 
-
 func (b boltDB) DBdelete(bucketName string, key string) error {
 	err := b.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(bucketName))
 		if bucket == nil {
-			
+
 			panic("Bucket : " + bucketName + " non trouvé.")
-			
-	
+
 		}
 		bucket.Delete([]byte(key))
 		return nil
@@ -151,7 +178,7 @@ func (b boltDB) DBdelete(bucketName string, key string) error {
 	return nil
 }
 
-func(b boltDB) DBcreateBucket(bucketName string) {
+func (b boltDB) DBcreateBucket(bucketName string) {
 
 	err := b.db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(bucketName))
