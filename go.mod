@@ -18,6 +18,7 @@ replace internal/persistence/bolt => ./internal/persistence/bolt
 
 require (
 	github.com/boltdb/bolt v1.3.1 // indirect
+	github.com/go-openapi/runtime v0.23.3 // indirect
 	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
 	internal/web/rest v1.0.0
 )

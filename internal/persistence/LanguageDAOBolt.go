@@ -8,6 +8,7 @@ import (
 )
 
 var b = bolt.GetboltDB()
+var _ LanguageDAO = (*LanguageDAOBolt)(nil)
 
 type LanguageDAOBolt struct{}
 

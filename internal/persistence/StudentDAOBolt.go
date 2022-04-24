@@ -9,6 +9,7 @@ import (
 )
 
 var bS = bolt.GetboltDB()
+var _ StudentDAO = (*StudentDAOBolt)(nil)
 
 type StudentDAOBolt struct{}
 

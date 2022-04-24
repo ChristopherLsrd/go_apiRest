@@ -1,13 +1,12 @@
 package persistence
 
-import(
+import (
 	"internal/entities"
 )
 
-
-type languageDAO interface{
+type LanguageDAO interface {
 	FindAll() []entities.Language
-	Find(code string) *entities.Language
+	Find(code string) entities.Language
 	Exists(code string) bool
 	Delete(code string) bool
 	Create(language entities.Language) bool

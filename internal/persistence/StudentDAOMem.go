@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+var _ StudentDAO = (*StudentDAOMem)(nil)
+
 var students []entities.Student = []entities.Student{
 	entities.NewStudent(2, "Daurian", "Jsp", 20, "Go"), entities.NewStudent(3, "Daryl", "Jsp", 20, "-2"), entities.NewStudent(4, "Christopher", "Lessirard", 20, "26"), entities.NewStudent(1, "Gaspar", "Missiaen", 21, "23"),
 }

@@ -1,0 +1,201 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "title": "API of students and languages.",
+    "contact": {
+      "name": "Christopher Lessirard",
+      "email": "christopher.lessirard@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/rest",
+  "paths": {
+    "/languages": {
+      "get": {
+        "description": "Return all the languages.",
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Return all the languages.",
+        "operationId": "GetLanguages",
+        "responses": {}
+      },
+      "put": {
+        "description": "Modify an existing language.",
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Modify an existing language.",
+        "operationId": "PutLanguage",
+        "parameters": [
+          {
+            "description": "language to modify",
+            "name": "language",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/internal/entities/Language"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "Add a new language if code provided not existing.",
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Add new language.",
+        "operationId": "PostLanguage",
+        "parameters": [
+          {
+            "description": "language to add",
+            "name": "language",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/internal/entities/Language"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/languages/{code}": {
+      "get": {
+        "description": "Return a language if code provided match with one language in the database.",
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Return a language.",
+        "operationId": "GetLanguage",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "language code",
+            "name": "code",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "Delete an existing language.",
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Delete a language.",
+        "operationId": "DeleteLanguage",
+        "parameters": [
+          {
+            "description": "language code",
+            "name": "code",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/students": {
+      "get": {
+        "description": "Return all the studens.",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Return students.",
+        "operationId": "GetStudents",
+        "responses": {}
+      },
+      "put": {
+        "description": "Modify an existing student.",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Modify an existing student.",
+        "operationId": "PutStudent",
+        "parameters": [
+          {
+            "description": "student to modify",
+            "name": "student",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/internal/entities/Student"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "Add a new student if id provided not existing.",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Add new student.",
+        "operationId": "PostStudent",
+        "parameters": [
+          {
+            "description": "student to add int the student bucket",
+            "name": "student",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/internal/entities/Student"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "description": "Return a student if id provided match with one student in the database.",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Return student.",
+        "operationId": "GetStudent",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "student id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "Delete a student if id provided existing.",
+        "tags": [
+          "Students"
+        ],
+        "summary": "Delete a student.",
+        "operationId": "DeleteStudent",
+        "parameters": [
+          {
+            "description": "student id",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    }
+  }
+}

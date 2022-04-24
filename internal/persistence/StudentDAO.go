@@ -1,12 +1,12 @@
 package persistence
 
-import(
+import (
 	"internal/entities"
 )
 
-type studentDAO interface{
+type StudentDAO interface {
 	FindAll() []entities.Student
-	Find(id int) *entities.Student
+	Find(id int) entities.Student
 	Exists(id int) bool
 	Delete(id int) bool
 	Create(student entities.Student) bool
